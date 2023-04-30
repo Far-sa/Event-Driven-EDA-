@@ -14,7 +14,6 @@ type RabbitClient struct {
 	ch *amqp.Channel
 }
 
-// Create Connection
 func ConnectRabbitMQ(username, password, host, vhost string) (*amqp.Connection, error) {
 	return amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s/%s", username, password, host, vhost))
 }
