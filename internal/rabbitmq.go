@@ -23,7 +23,7 @@ func NewRabbitMQClient(conn *amqp.Connection) (RabbitClient, error) {
 	if err != nil {
 		return RabbitClient{}, err
 	}
-	
+
 	return RabbitClient{
 		conn: conn,
 		ch:   ch,
@@ -47,6 +47,11 @@ func (rc RabbitClient) Send(ctx context.Context, exchange, routingkey string, op
 	return rc.ch.PublishWithContext(ctx, exchange, routingkey, true, false, options)
 }
 
-func (rc RabbitClient) Consume(queue,consumer string,autoAck bool)(<-chan amqp.Delivery,error){
-	return rc.ch.Consume(queue,consumer,autoAck,false,false,false,nil)
+func (rc RabbitClient) Consume(queue, consumer string, autoAck bool) (<-chan amqp.Delivery, error) {
+	return rc.ch.Consume(queue, consumer, autoAck, false, false, false, nil)
+}
+
+// prefetch count/ prefetch size - global tag
+func (rc RabbitClient) ApplyQos(count, size int, global bool) error {
+	return rc.ch.Qos(count, size, global)
 }
